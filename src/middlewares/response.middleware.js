@@ -5,7 +5,7 @@ export function responseMiddleware(req, res, next) {
       status: "success",
       code,
       message,
-      obj: data, // aquí entra lo que devuelva tu controlador
+      obj: data,
     });
   };
 
