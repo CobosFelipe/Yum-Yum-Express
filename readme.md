@@ -6,7 +6,7 @@ Este repositorio contiene el código y un par de ejemplos de uso de la Api expue
 ### Enlace del repositorio:
 [Yum-Yum-Express](https://github.com/CobosFelipe/Yum-Yum-Express.git)
 
-## 🗒 Requisitos
+## 📝 Requisitos
 Estas dependencias deben estar en esta version o superior.
 
 [Node v22.14.0](https://nodejs.org/es/)<br>
@@ -19,7 +19,7 @@ Estas dependencias deben estar en esta version o superior.
 [Nodemon v3.1.10 (Desarrollo)](https://www.npmjs.com/package/nodemon)<br>
 [Pg v8.16.3](https://www.npmjs.com/package/pg)
 
-## 💻 Instalación
+## 📦 Instalación
 ### Clonar repositorio
 Para instalar el proyecto se debe clonar el repositorio (Enlace arriba) ☝ con el siguiente script o comando:
 
@@ -47,6 +47,12 @@ npm run dev
 #Para producción
 node app.js
 ```
+
+## 💻 Uso
+A continuación un ejemplo de uso:
+* Este backend entrega una Api que se puede consumir con peticiones de tipo Rest
+
+![Script conexión bd exitosa](./src/utilities/imgs/img_doc_2.jpg)
 
 ## 📚Contenido
 A continuación se describe el contenido de cada carpeta principal del repositorio.
