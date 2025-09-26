@@ -4,38 +4,20 @@
 Este repositorio contiene el código y un par de ejemplos de uso de la Api expuesta por este backend creado con Express Js.
 
 ### Enlace del repositorio:
-<a src="https://github.com/CobosFelipe/Yum-Yum-Express.git">Yum-Yum-Express</a>
+[Yum-Yum-Express](https://github.com/CobosFelipe/Yum-Yum-Express.git)
 
 ## 🗒 Requisitos
 Estas dependencias deben estar en esta version o superior.
 
-<a target="_blank" src="https://nodejs.org/es/">
-    Node v22.14.0
-</a><br>
-<a target="_blank" src="https://nodejs.org/es/">
-    Npm v10.9.2 (Se incluyé con node)
-</a><br>
-<a target="_blank" src="https://www.npmjs.com/package/bcrypt">
-    Bcrypt v6.0.0
-</a><br>
-<a target="_blank" src="https://www.npmjs.com/package/cors">
-    Cors v2.8.5
-</a><br>
-<a target="_blank" src="https://www.npmjs.com/package/express">
-    Express v5.1.0
-</a><br>
-<a target="_blank" src="https://www.npmjs.com/package/joi">
-    Joi v18.0.1
-</a><br>
-<a target="_blank" src="https://www.npmjs.com/package/morgan">
-    Morgan v1.10.1
-</a><br>
-<a target="_blank" src="https://www.npmjs.com/package/nodemon">
-    Nodemon v3.1.10 (Desarrollo)
-</a><br>
-<a target="_blank" src="https://www.npmjs.com/package/pg">
-    Pg v8.16.3
-</a>
+[Node v22.14.0](https://nodejs.org/es/)<br>
+[Npm v10.9.2 (Se incluyé con node)](https://nodejs.org/es/)<br>
+[Bcrypt v6.0.0](https://www.npmjs.com/package/bcrypt)<br>
+[Cors v2.8.5](https://www.npmjs.com/package/cors)<br>
+[Express v5.1.0](https://www.npmjs.com/package/express)<br>
+[Joi v18.0.1](https://www.npmjs.com/package/joi)<br>
+[Morgan v1.10.1](https://www.npmjs.com/package/morgan)<br>
+[Nodemon v3.1.10 (Desarrollo)](https://www.npmjs.com/package/nodemon)<br>
+[Pg v8.16.3](https://www.npmjs.com/package/pg)
 
 ## 💻 Instalación
 ### Clonar repositorio
@@ -116,7 +98,8 @@ Para ejecutar **Solo** este archivo basta con ejecutar en la terminal el siguien
 node ./src/db.js
 ```
 
-Si la conexión fue exitosa nos devolverá el siguiente mensaje:
+Si la conexión fue exitosa nos devolverá el siguiente mensaje: <br>
+
 ![Script conexión bd exitosa](./src/utilities/imgs/img_doc_1.png)
 
 De lo contrario la consola retornara un mensaje de error.
