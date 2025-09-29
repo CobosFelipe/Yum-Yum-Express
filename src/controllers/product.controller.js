@@ -10,7 +10,7 @@ export const addProduct = async (req, res) => {
       res.error("Error al crear producto", 404);
     }
   } catch (error) {
-    console.error(error, "Error al crear producto:");
+    console.error("Error al crear producto:", error);
     res.error("Error interno del servidor", 500);
   }
 };
@@ -22,7 +22,7 @@ export const editProduct = async (req, res) => {
     if (result) {
       res.success(result, "Producto editado con éxito");
     } else {
-      res.error("Error al editar producto", 404);
+      res.error("Producto no encontrado o el ID es incorrecto", 404);
     }
   } catch (error) {
     console.error("Error al editar producto:", error);
@@ -35,12 +35,12 @@ export const searchProductsByCategory = async (req, res) => {
     const { category_id, offset } = req.params;
     const result = await productsByCategory(category_id, offset);
     if (result) {
-      res.success(result, "Productos listados con éxito");
+      res.success(result, "Productos por categoria listados con éxito");
     } else {
-      res.error("Error al listar productos", 404);
+      res.error("Error al listar productos por categoria", 404);
     }
   } catch (error) {
-    console.error("Error al listar productos:", error);
+    console.error("Error al listar productos por categoria:", error);
     res.error("Error interno del servidor", 500);
   }
 };
