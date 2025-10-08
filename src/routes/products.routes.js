@@ -14,7 +14,7 @@ const router = Router();
 // Rutas
 router.post("/add", validateSchema(mainProductSchema), addProduct);
 router.put("/edit", validateSchema(mainProductSchema), editProduct);
-router.get("/category/:category_id/:offset", validateParams(searchProductByCategorySchema), searchProductsByCategory)
+router.get("/category/:name/:offset", validateParams(searchProductByCategorySchema), searchProductsByCategory)
 router.get("/all/:limit/:offset", validateParams(searchAllProductSchema), searchAllProducts)
 
 export default router;

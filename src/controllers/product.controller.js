@@ -1,4 +1,5 @@
 import { createProduct, listAllProducts, modifyProduct, productsByCategory } from "../models/product.model.js";
+import { capitalizeFirstLetter } from "../utilities/string.utilities.js";
 
 export const addProduct = async (req, res) => {
   try {
@@ -32,9 +33,11 @@ export const editProduct = async (req, res) => {
 
 export const searchProductsByCategory = async (req, res) => {
   try {
-    const { category_id, offset } = req.params;
-    const result = await productsByCategory(category_id, offset);
-    if (result) {
+    const { name, offset } = req.params;
+    const capitalizeName = capitalizeFirstLetter(name);
+    const result = await productsByCategory(capitalizeName, offset);
+    
+    if (result && result.length > 0) {
       res.success(result, "Productos por categoria listados con éxito");
     } else {
       res.error("Error al listar productos por categoria", 404);

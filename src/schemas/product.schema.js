@@ -14,7 +14,7 @@ export const mainProductSchema = Joi.object({
 
 // Esquema para consultar productos por categoria
 export const searchProductByCategorySchema = Joi.object({
-  category_id: Joi.number().integer().max(50),
+  name: Joi.string().min(3).max(50).required(),
   offset: Joi.number().integer().min(0),
 });
 

@@ -36,7 +36,7 @@ export async function modifyProduct(product) {
 }
 
 // Query para consultar productos por categoria
-export async function productsByCategory(category_id, offset) {
+export async function productsByCategory(name, offset) {
   const query = `SELECT
 	    p.product_id,
 	    c.name as category_name,
@@ -47,9 +47,9 @@ export async function productsByCategory(category_id, offset) {
 	    p.available,
 	    p.quantity
       FROM products p JOIN category c ON p.fk_category_id = c.category_id
-      WHERE c.category_id = $1 AND p.available = true
+      WHERE c.name = $1 AND p.available = true
       LIMIT 12 OFFSET $2`;
-  const result = await db.query(query, [category_id, offset]);
+  const result = await db.query(query, [name, offset]);
   const products = result.rows;
   return products;
 }
@@ -66,6 +66,7 @@ export async function listAllProducts(limit, offset) {
 	    p.available,
 	    p.quantity
       FROM products p JOIN category c ON p.fk_category_id = c.category_id
+      ORDER BY p.product_id
       LIMIT $1 OFFSET $2`;
   const result = await db.query(query, [limit, offset]);
   const products = result.rows;
