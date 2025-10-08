@@ -18,8 +18,8 @@ export const listCategories = async (req, res) => {
 // Controlador para crear una categoria
 export const addCategory = async (req, res) => {
   try {
-    const { name } = req.body;
-    const result = await createCategory(name);
+    const { name, img } = req.body;
+    const result = await createCategory(name, img);
     if (result) {
       res.success(result, "Categoria creada!");
     } else {
@@ -53,12 +53,12 @@ export const deleteCategory = async (req, res) => {
     const { category_id } = req.body;
     const result = await eraseCategory(category_id);
     if (result) {
-      res.success(result, "Categoria eliminada con exito!");
+      res.success({}, "Categoria eliminada con exito!");
     } else {
-      res.error({ message: "Error eliminando categoria" }, 503);
+      res.error({ message: "Error al eliminar categoria, no existe" }, 503);
     }
   } catch (error) {
     console.error("Error al eliminar categoria:", error);
-    res.error("Error interno del servidor", 500);
+    res.error(`Error interno del servidor, ${error}`, 500);
   }
 };
