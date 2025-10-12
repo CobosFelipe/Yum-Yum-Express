@@ -33,14 +33,44 @@ export const editProduct = async (req, res) => {
 
 export const searchProductsByCategory = async (req, res) => {
   try {
-    const { name, offset } = req.params;
+    // Datos de los parametros
+    const { name } = req.params;
+    const offset = parseInt(req.params.offset) || 0;
+
+    //Formateo del nombre de la categoria
     const capitalizeName = capitalizeFirstLetter(name);
-    const result = await productsByCategory(capitalizeName, offset);
-    
-    if (result && result.length > 0) {
-      res.success(result, "Productos por categoria listados con éxito");
+
+    const { products, totalItems, pageSize } = await productsByCategory(capitalizeName, offset);
+
+    // Calcular la metadata de paginación
+    const currentPage = Math.floor(offset / pageSize) + 1;
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    const hasNextPage = offset + pageSize < totalItems;
+    const hasPrevPage = offset > 0;
+
+    // Estructurar la respuesta
+    const paginationMeta = {
+      totalItems: totalItems,
+      pageSize: pageSize,
+      currentPage: currentPage,
+      totalPages: totalPages,
+      hasNextPage: hasNextPage,
+      hasPrevPage: hasPrevPage,
+      nextOffset: hasNextPage ? offset + pageSize : null,
+      prevOffset: hasPrevPage ? offset - pageSize : null,
+    };
+
+    if (products.length > 0 || totalItems > 0) {
+      res.success(
+        {
+          products: products,
+          pagination: paginationMeta,
+        },
+        "Productos por categoría listados con éxito"
+      );
     } else {
-      res.error("Error al listar productos por categoria", 404);
+      res.error(`No se encontraron productos para la categoría: ${capitalizeName}`, 404);
     }
   } catch (error) {
     console.error("Error al listar productos por categoria:", error);
@@ -50,12 +80,41 @@ export const searchProductsByCategory = async (req, res) => {
 
 export const searchAllProducts = async (req, res) => {
   try {
-    const { limit, offset } = req.params;
-    const result = await listAllProducts(limit, offset);
-    if (result) {
-      res.success(result, "Productos listados con éxito");
+    // Parametros de entrada
+    const limit  = parseInt(req.params.limit) || 12;
+    const offset = parseInt(req.params.offset) || 0;
+
+    const { products, totalItems, pageSize } = await listAllProducts(limit, offset);
+
+    // Calcular la metadata de paginación
+    const currentPage = Math.floor(offset / pageSize) + 1;
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    const hasNextPage = offset + pageSize < totalItems;
+    const hasPrevPage = offset > 0;
+
+    // Estructurar la respuesta
+    const paginationMeta = {
+      totalItems: totalItems,
+      pageSize: pageSize,
+      currentPage: currentPage,
+      totalPages: totalPages,
+      hasNextPage: hasNextPage,
+      hasPrevPage: hasPrevPage,
+      nextOffset: hasNextPage ? offset + pageSize : null,
+      prevOffset: hasPrevPage ? offset - pageSize : null,
+    };
+
+    if (products.length > 0 || totalItems > 0) {
+      res.success(
+        {
+          products: products,
+          pagination: paginationMeta,
+        },
+        "Productos listados con éxito"
+      );
     } else {
-      res.error("Error al listar productos", 404);
+      res.error(`No se encontraron los productos`, 404);
     }
   } catch (error) {
     console.error("Error al listar productos:", error);

@@ -37,6 +37,8 @@ export async function modifyProduct(product) {
 
 // Query para consultar productos por categoria
 export async function productsByCategory(name, offset) {
+  const pageSize = 12;
+  // Query para obtener los productos paginados
   const query = `SELECT
 	    p.product_id,
 	    c.name as category_name,
@@ -48,14 +50,32 @@ export async function productsByCategory(name, offset) {
 	    p.quantity
       FROM products p JOIN category c ON p.fk_category_id = c.category_id
       WHERE c.name = $1 AND p.available = true
-      LIMIT 12 OFFSET $2`;
-  const result = await db.query(query, [name, offset]);
+      LIMIT $2 OFFSET $3`;
+
+  const result = await db.query(query, [name, pageSize, offset]);
   const products = result.rows;
-  return products;
+
+  // Query para obtener el total de registros filtrados
+  const totalCountQuery = `
+        SELECT COUNT(p.product_id)
+        FROM products p JOIN category c ON p.fk_category_id = c.category_id
+        WHERE c.name = $1 AND p.available = true`;
+
+  const totalCountResult = await db.query(totalCountQuery, [name]);
+  const totalItems = parseInt(totalCountResult.rows[0].count);
+
+  // Devolver un objeto con los productos y el total de items
+  return {
+    products,
+    totalItems,
+    pageSize,
+  };
 }
 
 // Query para consultar todos los productos
 export async function listAllProducts(limit, offset) {
+  const pageSize = 12;
+  // Query para obtener los productos paginados
   const query = `SELECT
 	    p.product_id,
 	    c.name as category_name,
@@ -68,7 +88,22 @@ export async function listAllProducts(limit, offset) {
       FROM products p JOIN category c ON p.fk_category_id = c.category_id
       ORDER BY p.product_id
       LIMIT $1 OFFSET $2`;
+  
   const result = await db.query(query, [limit, offset]);
   const products = result.rows;
-  return products;
+
+  // Query para obtener el total de registros filtrados
+  const totalCountQuery = `
+      SELECT COUNT(p.product_id)
+      FROM products p JOIN category c ON p.fk_category_id = c.category_id`;
+
+  const totalCountResult = await db.query(totalCountQuery);
+  const totalItems = parseInt(totalCountResult.rows[0].count);
+
+  // Devolver un objeto con los productos y el total de items
+  return {
+    products,
+    totalItems,
+    pageSize,
+  };
 }
