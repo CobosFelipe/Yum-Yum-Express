@@ -1,4 +1,4 @@
-export function responseMiddleware(req, res, next) {
+export default function responseMiddleware(req, res, next) {
   // sobreescribimos res.success y res.error para unificar respuestas
   res.success = (data, message = "Operación exitosa", code = 200) => {
     res.status(code).json({

@@ -17,14 +17,19 @@ export async function createUser(name, email, telephone, hash) {
 }
 
 // Query para buscar el pasword hash con el email
-export async function searchPassword(email) {
+export async function searchUser(email) {
   try {
-    const query = "SELECT password FROM users WHERE email = ($1)";
+    const query = "SELECT user_name, password, role, is_admin FROM users WHERE email = ($1)";
     const result = await db.query(query, [email]);
 
+    const data = result.rows[0];
+    
     if (result.rows.length > 0) {
-      const { password } = result.rows[0];
-      return password;
+      const userName = data.user_name;
+      const hash = data.password;
+      const role = data.role;
+      const isAdmin = data.is_admin;
+      return { userName, hash, role, isAdmin };
     }
     return null;
   } catch (error) {

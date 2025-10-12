@@ -1,5 +1,6 @@
 // Dependencias
 import { Router } from "express";
+import requireAuth from "../middlewares/auth.middleware.js"
 
 // Controladores
 import { addProduct, editProduct, searchAllProducts, searchProductsByCategory } from "../controllers/product.controller.js";
@@ -12,8 +13,8 @@ import { mainProductSchema, searchProductByCategorySchema, searchAllProductSchem
 const router = Router();
 
 // Rutas
-router.post("/add", validateSchema(mainProductSchema), addProduct);
-router.put("/edit", validateSchema(mainProductSchema), editProduct);
+router.post("/add", validateSchema(mainProductSchema), requireAuth, addProduct);
+router.put("/edit", validateSchema(mainProductSchema), requireAuth, editProduct);
 router.get("/category/:name/:offset", validateParams(searchProductByCategorySchema), searchProductsByCategory)
 router.get("/all/:limit/:offset", validateParams(searchAllProductSchema), searchAllProducts)
 

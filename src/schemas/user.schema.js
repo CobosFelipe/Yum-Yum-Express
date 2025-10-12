@@ -14,7 +14,7 @@ export const createUserSchema = Joi.object({
 });
 
 // Esquema para validar usuario
-export const validateUserSchema = Joi.object({
+export const loginUserSchema = Joi.object({
   email: Joi.string().email().max(50).required(),
   password: Joi.string().min(8).max(20).required(),
 });

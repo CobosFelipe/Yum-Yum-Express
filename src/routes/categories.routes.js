@@ -1,5 +1,6 @@
 // Dependencias
 import { Router } from "express";
+import requireAuth from "../middlewares/auth.middleware.js"
 
 // Controladores
 import { listCategories, addCategory, editCategory, deleteCategory } from "../controllers/category.controller.js";
@@ -13,8 +14,8 @@ const router = Router();
 
 // Rutas
 router.get("/get", listCategories);
-router.post("/add", validateSchema(addCategorySchema), addCategory);
-router.put("/edit", validateSchema(editCategorySchema), editCategory);
-router.delete("/delete", validateSchema(deleteCategorySchema), deleteCategory);
+router.post("/add", validateSchema(addCategorySchema), requireAuth, addCategory);
+router.put("/edit", validateSchema(editCategorySchema), requireAuth, editCategory);
+router.delete("/delete", validateSchema(deleteCategorySchema), requireAuth, deleteCategory);
 
 export default router;
