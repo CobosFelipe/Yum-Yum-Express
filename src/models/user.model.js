@@ -19,21 +19,26 @@ export async function createUser(name, email, telephone, hash) {
 // Query para buscar el pasword hash con el email
 export async function searchUser(email) {
   try {
-    const query = "SELECT user_name, password, role, is_admin FROM users WHERE email = ($1)";
+    const query = "SELECT user_id, user_name, password, role, is_admin FROM users WHERE email = ($1)";
     const result = await db.query(query, [email]);
 
-    const data = result.rows[0];
-    
-    if (result.rows.length > 0) {
-      const userName = data.user_name;
-      const hash = data.password;
-      const role = data.role;
-      const isAdmin = data.is_admin;
-      return { userName, hash, role, isAdmin };
+    if (result.rows.length === 0) {
+      // Usuario no encontrado
+      return null;
     }
-    return null;
+
+    const data = result.rows[0];
+
+    // Regresar el objeto desestructurado
+    return {
+      userId: data.user_id,
+      userName: data.user_name,
+      hash: data.password,
+      role: data.role,
+      isAdmin: data.is_admin,
+    };
   } catch (error) {
-    console.log(`Error consultando la contraseña en bd ${error}`);
-    return false;
+    console.error(`Error consultando el usuario en la BD: ${error.message}`);
+    throw new Error("Fallo en la consulta de base de datos.");
   }
 }
