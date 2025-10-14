@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { hashPassword, comparePassword } from "../utilities/encrypt.utilies.js";
 import { createUser, searchUser } from "../models/user.model.js";
+import { capitalizeFirstLetter } from "../utilities/string.utilities.js";
 
 export const validateUser = (req, res) => {
   const { userName, isAdmin } = req.user;
@@ -21,8 +22,9 @@ export const validateUser = (req, res) => {
 export const addUser = async (req, res) => {
   try {
     const { name, email, telephone, password } = req.body;
+    const Name = capitalizeFirstLetter(name);
     const hash = await hashPassword(password);
-    const result = await createUser(name, email, telephone, hash);
+    const result = await createUser(Name, email, telephone, hash);
 
     if (result) {
       res.success("Usuario creado con éxito");
@@ -55,21 +57,25 @@ export const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const JWT_KEY = process.env.SECRET_JWT_KEY;
 
-    const { hash, userName, role, isAdmin } = await searchUser(email);
+    const userCredentials = await searchUser(email);
 
-    // Se pasa el hash a la función comparePassword(), si esta tiene retorno != null sigue.
-    let result;
-    if (hash) {
-      result = await comparePassword(password, hash);
+    if (!userCredentials) {
+      return res.error("Usuario o contraseña incorrectas", 203);
     }
 
-    const token = jwt.sign({ userName: userName, role: role, isAdmin: isAdmin }, JWT_KEY, {
-      expiresIn: "1h",
-    });
+    const { userId, hash, userName, role, isAdmin } = userCredentials;
+
+    // Se pasa el hash a la función comparePassword(), si esta tiene retorno != null sigue.
+    const result = await comparePassword(password, hash);
 
     // Si encuentra coincidencia, retorna una respuesta exitosa.
     if (result) {
-      // Enviamos la cookie directamente a res
+      // Generar el token (Si la contraseña coincide)
+      const token = jwt.sign({ id: userId, userName: userName, role: role, isAdmin: isAdmin }, JWT_KEY, {
+        expiresIn: "1h",
+      });
+
+      // Código para setear la cookie
       res.cookie("acces_token", token, {
         httpOnly: true, // La cookie solo se puede acceder desde el servidor
         secure: process.env.NODE_ENV === "production", // La cookie solo se puede acceder por https en production
@@ -83,7 +89,7 @@ export const loginUser = async (req, res) => {
       res.error("Usuario o contraseña incorrectas", 203);
     }
   } catch (error) {
-    console.error("Error al validar usuario:", error);
+    console.error("Error al validar usuario: (Error interno)", error);
     res.error("Error interno del servidor", 500);
   }
 };
