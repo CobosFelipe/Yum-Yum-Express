@@ -34,11 +34,11 @@ export const editProduct = async (req, res) => {
 export const searchProductsByCategory = async (req, res) => {
   try {
     // Datos de los parametros
-    const { name } = req.params;
+    const { product_name } = req.params;
     const offset = parseInt(req.params.offset) || 0;
 
     //Formateo del nombre de la categoria
-    const capitalizeName = capitalizeFirstLetter(name);
+    const capitalizeName = capitalizeFirstLetter(product_name);
 
     const { products, totalItems, pageSize } = await productsByCategory(capitalizeName, offset);
 
@@ -81,7 +81,7 @@ export const searchProductsByCategory = async (req, res) => {
 export const searchAllProducts = async (req, res) => {
   try {
     // Parametros de entrada
-    const limit  = parseInt(req.params.limit) || 12;
+    const limit = parseInt(req.params.limit) || 12;
     const offset = parseInt(req.params.offset) || 0;
 
     const { products, totalItems, pageSize } = await listAllProducts(limit, offset);

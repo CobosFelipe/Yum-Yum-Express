@@ -2,10 +2,10 @@ import { db } from "../db.js";
 
 // Query para crear registros en la tabla productos
 export async function createProduct(product) {
-  const { fk_category_id, name, price, description, img, available, quantity } = product;
+  const { fk_category_id, product_name, price, description, img, available, quantity } = product;
   const query = `INSERT INTO products (
       fk_category_id,
-      name,
+      product_name,
       price,
       description,
       img,
@@ -14,16 +14,16 @@ export async function createProduct(product) {
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *`;
-  const result = await db.query(query, [fk_category_id, name, price, description, img, available, quantity]);
+  const result = await db.query(query, [fk_category_id, product_name, price, description, img, available, quantity]);
   return result.rows[0];
 }
 
 // Query para modificar registros en la tabla productos
 export async function modifyProduct(product) {
-  const { product_id, fk_category_id, name, price, description, img, available, quantity } = product;
+  const { product_id, fk_category_id, product_name, price, description, img, available, quantity } = product;
   const query = `UPDATE products SET
       fk_category_id = $1,
-      name = $2,
+      product_name = $2,
       price = $3,
       description = $4,
       img = $5,
@@ -31,37 +31,37 @@ export async function modifyProduct(product) {
       quantity = $7
       WHERE product_id = $8
       RETURNING *`;
-  const result = await db.query(query, [fk_category_id, name, price, description, img, available, quantity, product_id]);
+  const result = await db.query(query, [fk_category_id, product_name, price, description, img, available, quantity, product_id]);
   return result.rows[0];
 }
 
 // Query para consultar productos por categoria
-export async function productsByCategory(name, offset) {
+export async function productsByCategory(product_name, offset) {
   const pageSize = 12;
   // Query para obtener los productos paginados
   const query = `SELECT
 	    p.product_id,
-	    c.name as category_name,
-	    p.name as product_name,
+	    c.product_name as category_name,
+	    p.product_name as product_name,
 	    p.price,
 	    p.description,
 	    p.img,
 	    p.available,
 	    p.quantity
       FROM products p JOIN category c ON p.fk_category_id = c.category_id
-      WHERE c.name = $1 AND p.available = true
+      WHERE c.product_name = $1 AND p.available = true
       LIMIT $2 OFFSET $3`;
 
-  const result = await db.query(query, [name, pageSize, offset]);
+  const result = await db.query(query, [product_name, pageSize, offset]);
   const products = result.rows;
 
   // Query para obtener el total de registros filtrados
   const totalCountQuery = `
         SELECT COUNT(p.product_id)
         FROM products p JOIN category c ON p.fk_category_id = c.category_id
-        WHERE c.name = $1 AND p.available = true`;
+        WHERE c.product_name = $1 AND p.available = true`;
 
-  const totalCountResult = await db.query(totalCountQuery, [name]);
+  const totalCountResult = await db.query(totalCountQuery, [product_name]);
   const totalItems = parseInt(totalCountResult.rows[0].count);
 
   // Devolver un objeto con los productos y el total de items
@@ -78,8 +78,9 @@ export async function listAllProducts(limit, offset) {
   // Query para obtener los productos paginados
   const query = `SELECT
 	    p.product_id,
-	    c.name as category_name,
-	    p.name as product_name,
+      c.category_id,
+	    c.product_name as category_name,
+	    p.product_name as product_name,
 	    p.price,
 	    p.description,
 	    p.img,
