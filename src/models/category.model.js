@@ -27,7 +27,7 @@ export async function createCategory(name, img) {
 // Query para editar categoria
 export async function editeCategory({ category_id, name, img }) {
   try {
-    const query = `UPDATE category SET name = $1, img = $2 WHERE category_id = $3 RETURNING *`;
+    const query = "UPDATE category SET name = $1, img = $2 WHERE category_id = $3 RETURNING *";
     const result = await db.query(query, [name, img, category_id]);
     return result.rows[0];
   } catch (error) {
@@ -38,7 +38,7 @@ export async function editeCategory({ category_id, name, img }) {
 
 // Query para eliminar categoria
 export async function eraseCategory(category_id) {
-  const query = `DELETE FROM category WHERE category_id = $1 RETURNING *`;
+  const query = "DELETE FROM category WHERE category_id = $1 RETURNING *";
   const result = await db.query(query, [category_id]);
   return result.rows[0];
 }
