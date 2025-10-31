@@ -10,7 +10,7 @@ export const createUserSchema = Joi.object({
     .messages({
       "string.pattern.base": "El número de teléfono debe tener 10 dígitos y empezar con 3 o 6."
     }),
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{8,20}$")).required(),
+  password: Joi.string().pattern(new RegExp("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,20}$")).required(),
 });
 
 // Esquema para validar usuario

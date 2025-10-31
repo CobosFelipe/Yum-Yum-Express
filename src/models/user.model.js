@@ -42,3 +42,28 @@ export async function searchUser(email) {
     throw new Error("Fallo en la consulta de base de datos.");
   }
 }
+
+// Query para obtener la información de contacto del usuario
+export async function searchUserData(id) {
+  try {
+    const query = "SELECT user_name, email, telephone  FROM users WHERE user_id = ($1)";
+    const result = await db.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      // Usuario no encontrado
+      return null;
+    }
+
+    const data = result.rows[0];
+
+    // Regresar el objeto desestructurado
+    return {
+      userName: data.user_name,
+      email: data.email,
+      telephone: data.telephone,
+    };
+  } catch (error) {
+    console.error(`Error consultando el usuario en la BD: ${error.message}`);
+    throw new Error("Fallo en la consulta de base de datos.");
+  }
+}

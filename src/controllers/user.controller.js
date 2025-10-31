@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { hashPassword, comparePassword } from "../utilities/encrypt.utilies.js";
-import { createUser, searchUser } from "../models/user.model.js";
+import { createUser, searchUser, searchUserData } from "../models/user.model.js";
 import { capitalizeFirstLetter } from "../utilities/string.utilities.js";
 
 export const validateUser = (req, res) => {
@@ -12,6 +12,22 @@ export const validateUser = (req, res) => {
     },
     "Sesión activa"
   );
+};
+
+export const getInfoUser = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const userData = await searchUserData(id);
+
+    if (!userData) {
+      return res.error("Error consultando los datos del usuario", 404);
+    }
+
+    res.success(userData, "Consulta exitosa");
+  } catch (error) {
+    console.error("Error consultando los datos del usuario", error);
+    res.error("Error interno del servidor", 500);
+  }
 };
 
 /* Función para crear un usuario.
@@ -77,19 +93,39 @@ export const loginUser = async (req, res) => {
 
       // Código para setear la cookie
       res.cookie("acces_token", token, {
-        httpOnly: true, // La cookie solo se puede acceder desde el servidor
-        secure: process.env.NODE_ENV === "production", // La cookie solo se puede acceder por https en production
-        sameSite: "lax", // La cookie solo se puede acceder desde el mismo dominio
-        maxAge: 1000 * 60 * 60, // La cookie tiene una validez de 1h
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 1000 * 60 * 60,
       });
 
-      // Enviamos el cuerpo de la respuesta estandar
       res.success({ userName, isAdmin }, "Credenciales correctas");
     } else {
       res.error("Usuario o contraseña incorrectas", 203);
     }
   } catch (error) {
     console.error("Error al validar usuario: (Error interno)", error);
+    res.error("Error interno del servidor", 500);
+  }
+};
+
+export const logoutUser = async (req, res) => {
+  try {
+    const id = req.user;
+    if (id) {
+      res.cookie("session-token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
+      res.success("Sesión cerrada correctamente");
+    } else {
+      res.error("Error al cerrar sesión", 503);
+    }   
+  } catch (error) {
+    console.error("Error al cerrar sesión: (Error interno)", error);
     res.error("Error interno del servidor", 500);
   }
 };
