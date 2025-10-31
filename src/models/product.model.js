@@ -40,13 +40,13 @@ export async function modifyProduct(product) {
 }
 
 // Query para consultar productos por categoria
-export async function productsByCategory(product_name, offset) {
+export async function productsByCategory(category_name, offset) {
   const pageSize = 12;
   // Query para obtener los productos paginados
   const query = `
       SELECT
 	    p.product_id,
-	    c.product_name as category_name,
+	    c.category_name,
 	    p.product_name as product_name,
 	    p.price,
 	    p.description,
@@ -54,19 +54,19 @@ export async function productsByCategory(product_name, offset) {
 	    p.available,
 	    p.quantity
       FROM products p JOIN category c ON p.fk_category_id = c.category_id
-      WHERE c.product_name = $1 AND p.available = true
+      WHERE c.category_name = $1 AND p.available = true AND quantity > 0
       LIMIT $2 OFFSET $3
       `;
-  const result = await db.query(query, [product_name, pageSize, offset]);
+  const result = await db.query(query, [category_name, pageSize, offset]);
   const products = result.rows;
 
   // Query para obtener el total de registros filtrados
   const totalCountQuery = `
       SELECT COUNT(p.product_id)
       FROM products p JOIN category c ON p.fk_category_id = c.category_id
-      WHERE c.product_name = $1 AND p.available = true
+      WHERE c.category_name = $1 AND p.available = true AND quantity > 0
       `;
-  const totalCountResult = await db.query(totalCountQuery, [product_name]);
+  const totalCountResult = await db.query(totalCountQuery, [category_name]);
   const totalItems = parseInt(totalCountResult.rows[0].count);
 
   // Devolver un objeto con los productos y el total de items
@@ -85,7 +85,58 @@ export async function listAllProducts(limit, offset) {
       SELECT
 	    p.product_id,
       c.category_id,
-	    c.product_name as category_name,
+	    c.category_name,
+	    p.product_name as product_name,
+	    p.price,
+	    p.description,
+	    p.img,
+	    p.available,
+	    p.quantity
+      FROM products p JOIN category c ON p.fk_category_id = c.category_id
+      WHERE available = TRUE AND quantity > 0
+      ORDER BY p.product_id
+      LIMIT $1 OFFSET $2
+      `;
+  const result = await db.query(query, [limit, offset]);
+  const products = result.rows;
+
+  // Query para obtener el total de registros filtrados
+  const totalCountQuery = `
+      SELECT COUNT(p.product_id)
+      FROM products p JOIN category c ON p.fk_category_id = c.category_id
+      WHERE available = TRUE AND quantity > 0
+      `;
+  const totalCountResult = await db.query(totalCountQuery);
+  const totalItems = parseInt(totalCountResult.rows[0].count);
+
+  // Devolver un objeto con los productos y el total de items
+  return {
+    products,
+    totalItems,
+    pageSize,
+  };
+}
+
+// Query para eliminar un producto
+export async function deleteProduct(product_id) {
+  const query = `
+      DELETE FROM products
+      WHERE product_id = $1
+      RETURNING *
+      `;
+  const result = await db.query(query, [product_id]);
+  return result.rows[0];
+}
+
+// Query para consultar todos los productos Admin
+export async function listAllProductsAdmin(limit, offset) {
+  const pageSize = 12;
+  // Query para obtener los productos paginados
+  const query = `
+      SELECT
+	    p.product_id,
+      c.category_id,
+	    c.category_name,
 	    p.product_name as product_name,
 	    p.price,
 	    p.description,

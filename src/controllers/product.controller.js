@@ -1,4 +1,4 @@
-import { createProduct, listAllProducts, modifyProduct, productsByCategory } from "../models/product.model.js";
+import { createProduct, listAllProducts, modifyProduct, productsByCategory, deleteProduct, listAllProductsAdmin } from "../models/product.model.js";
 import { capitalizeFirstLetter } from "../utilities/string.utilities.js";
 
 export const addProduct = async (req, res) => {
@@ -34,11 +34,11 @@ export const editProduct = async (req, res) => {
 export const searchProductsByCategory = async (req, res) => {
   try {
     // Datos de los parametros
-    const { product_name } = req.params;
+    const { category_name } = req.params;
     const offset = parseInt(req.params.offset) || 0;
 
     //Formateo del nombre de la categoria
-    const capitalizeName = capitalizeFirstLetter(product_name);
+    const capitalizeName = capitalizeFirstLetter(category_name);
 
     const { products, totalItems, pageSize } = await productsByCategory(capitalizeName, offset);
 
@@ -85,6 +85,65 @@ export const searchAllProducts = async (req, res) => {
     const offset = parseInt(req.params.offset) || 0;
 
     const { products, totalItems, pageSize } = await listAllProducts(limit, offset);
+
+    // Calcular la metadata de paginación
+    const currentPage = Math.floor(offset / pageSize) + 1;
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    const hasNextPage = offset + pageSize < totalItems;
+    const hasPrevPage = offset > 0;
+
+    // Estructurar la respuesta
+    const paginationMeta = {
+      totalItems: totalItems,
+      pageSize: pageSize,
+      currentPage: currentPage,
+      totalPages: totalPages,
+      hasNextPage: hasNextPage,
+      hasPrevPage: hasPrevPage,
+      nextOffset: hasNextPage ? offset + pageSize : null,
+      prevOffset: hasPrevPage ? offset - pageSize : null,
+    };
+
+    if (products.length > 0 || totalItems > 0) {
+      res.success(
+        {
+          products: products,
+          pagination: paginationMeta,
+        },
+        "Productos listados con éxito"
+      );
+    } else {
+      res.error(`No se encontraron los productos`, 404);
+    }
+  } catch (error) {
+    console.error("Error al listar productos:", error);
+    res.error("Error interno del servidor", 500);
+  }
+};
+
+export const deleteProductById = async (req, res) => {
+  try {
+    const { product_id } = req.params;
+    const result = await deleteProduct(product_id);
+    if (result) {
+      res.success(result, "Producto eliminado con éxito");
+    } else {
+      res.error("Producto no encontrado o el ID es incorrecto", 404);
+    }
+  } catch (error) {
+    console.error("Error al eliminar producto:", error);
+    res.error("Error interno del servidor", 500);
+  }
+};
+
+export const searchAllProductsAdmin = async (req, res) => {
+  try {
+    // Parametros de entrada
+    const limit = parseInt(req.params.limit) || 12;
+    const offset = parseInt(req.params.offset) || 0;
+
+    const { products, totalItems, pageSize } = await listAllProductsAdmin(limit, offset);
 
     // Calcular la metadata de paginación
     const currentPage = Math.floor(offset / pageSize) + 1;
