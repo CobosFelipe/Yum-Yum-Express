@@ -43,7 +43,7 @@ export async function createOrderTransaction(user_id, products) {
 
     // Consultar precios y stock actuales
     const validationQuery = `
-        SELECT product_id, name, price, quantity 
+        SELECT product_id, product_name, price, quantity 
         FROM products 
         WHERE product_id = ANY($1::int[]) AND available = TRUE;
     `;
@@ -77,7 +77,7 @@ export async function createOrderTransaction(user_id, products) {
       // Preparar el JSONB del item
       productsForOrderItems.push({
         product_id: dbProduct.product_id,
-        name: dbProduct.name,
+        product_name: dbProduct.product_name,
         price: Number(dbProduct.price),
         quantity: item.quantity,
       });

@@ -16,10 +16,10 @@ export const createOrder = async (req, res) => {
       res.success({ orderId: result.orderId, total: result.total }, "Orden creada exitosamente", 201);
     } else {
       // El error fue manejado internamente (ROLLBACK)
-      res.error("Fallo al procesar la compra", 500);
+      res.error("Fallo al procesar la compra", 500, result.error);
     }
   } catch (error) {
-    console.error("Error en el controlador de la orden:", error);
-    res.status(500).json({ error: "Error interno del servidor." });
+    console.error(error, "Error en el controlador de la orden:");
+    res.error("Error interno del servidor.", 500, error);
   }
 };

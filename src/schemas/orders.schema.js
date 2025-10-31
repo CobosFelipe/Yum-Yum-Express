@@ -9,7 +9,7 @@ export const mainProductSchema = Joi.object({
 // Esquema para crear o editar una orden
 export const createOrderSchema = Joi.object({
   products: Joi.array()
-    .items(mainProductSchema) // validar cada elemento y este debe cumplir con el esquema del producto
+    .items(mainProductSchema)
     .min(1)
     .required(),
 });
