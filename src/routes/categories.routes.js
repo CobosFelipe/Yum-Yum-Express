@@ -1,6 +1,6 @@
 // Dependencias
 import { Router } from "express";
-import requireAuth from "../middlewares/auth.middleware.js"
+import { requireAuth }  from "../middlewares/auth.middleware.js"
 
 // Controladores
 import { listCategories, addCategory, editCategory, deleteCategory } from "../controllers/category.controller.js";

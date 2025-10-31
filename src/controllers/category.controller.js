@@ -18,8 +18,8 @@ export const listCategories = async (req, res) => {
 // Controlador para crear una categoria
 export const addCategory = async (req, res) => {
   try {
-    const { name, img } = req.body;
-    const result = await createCategory(name, img);
+    const { category_name, img } = req.body;
+    const result = await createCategory(category_name, img);
     if (result) {
       res.success(result, "Categoria creada!");
     } else {

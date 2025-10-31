@@ -13,10 +13,10 @@ export async function searchCategories() {
 }
 
 // Query para crear categoria
-export async function createCategory(name, img) {
+export async function createCategory(category_name, img) {
   try {
-    const query = "INSERT INTO category (name, img) VALUES ($1, $2) RETURNING *";
-    const result = await db.query(query, [name, img]);
+    const query = "INSERT INTO category (category_name, img) VALUES ($1, $2) RETURNING *";
+    const result = await db.query(query, [category_name, img]);
     return result.rows[0];
   } catch (error) {
     console.log(`Error insertando categoria en bd ${error}`);
@@ -25,10 +25,10 @@ export async function createCategory(name, img) {
 }
 
 // Query para editar categoria
-export async function editeCategory({ category_id, name, img }) {
+export async function editeCategory({ category_id, category_name, img }) {
   try {
-    const query = "UPDATE category SET name = $1, img = $2 WHERE category_id = $3 RETURNING *";
-    const result = await db.query(query, [name, img, category_id]);
+    const query = "UPDATE category SET category_name = $1, img = $2 WHERE category_id = $3 RETURNING *";
+    const result = await db.query(query, [category_name, img, category_id]);
     return result.rows[0];
   } catch (error) {
     console.log(`Error editando categoria en bd ${error}`);
