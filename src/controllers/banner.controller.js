@@ -23,6 +23,8 @@ export const listBanner = async (req, res) => {
     const result = await searchBanner();
     if (result) {
       res.success(result, "Consulta correcta");
+    } else {
+      res.error("Error al listar banners")
     }
   } catch (error) {
     console.error("Error al consultar banners:", error);
@@ -31,12 +33,14 @@ export const listBanner = async (req, res) => {
 };
 
 // Función para editar imagenes del banner
-export const editBanner = async (req, res) => {
-  const { link, id_banner } = req.body;
+export const editBanner = async (req, res) => {    
+  const { link, banner_id } = req.body;
   try {
-    const result = await changeBanner(link, id_banner);
+    const result = await changeBanner(link, banner_id);
     if (result) {
       res.success(result, "Banner editado correctamente");
+    } else {
+      res.error("Error al editar banner")
     }
   } catch (error) {
     console.error("Error al editar banners:", error);
@@ -47,7 +51,7 @@ export const editBanner = async (req, res) => {
 // Función para editar imagenes del banner
 export const deleteBanner = async (req, res) => {
   try {
-    const result = await eraseBanner( req.body.id_banner);
+    const result = await eraseBanner( req.body.banner_id);
     if (result) {
       res.success(result, "Banner eliminado correctamente");
     }
