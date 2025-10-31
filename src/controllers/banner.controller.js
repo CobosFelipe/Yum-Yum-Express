@@ -1,4 +1,4 @@
-import { createBanner, searchBanner } from "../models/banner.model.js"
+import { createBanner, searchBanner, changeBanner, eraseBanner } from "../models/banner.model.js"
 
 // Función para agregar una imagen al banner.
 export const addBanner = async (req, res) => {
@@ -26,6 +26,33 @@ export const listBanner = async (req, res) => {
     }
   } catch (error) {
     console.error("Error al consultar banners:", error);
+    res.error("Error interno del servidor", 500);
+  }
+};
+
+// Función para editar imagenes del banner
+export const editBanner = async (req, res) => {
+  const { link, id_banner } = req.body;
+  try {
+    const result = await changeBanner(link, id_banner);
+    if (result) {
+      res.success(result, "Banner editado correctamente");
+    }
+  } catch (error) {
+    console.error("Error al editar banners:", error);
+    res.error("Error interno del servidor", 500);
+  }
+};
+
+// Función para editar imagenes del banner
+export const deleteBanner = async (req, res) => {
+  try {
+    const result = await eraseBanner( req.body.id_banner);
+    if (result) {
+      res.success(result, "Banner eliminado correctamente");
+    }
+  } catch (error) {
+    console.error("Error al eliminar banners:", error);
     res.error("Error interno del servidor", 500);
   }
 };
